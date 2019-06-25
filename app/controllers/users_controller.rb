@@ -8,7 +8,7 @@ class UsersController < ApplicationController
         user = User.find_by(id: session[:user_id])
         if !user.nil?
           if user.id == session[:user_id]
-            redirect to '/tweets'
+            redirect to '/amiibos'
           end
         else
           erb :'/users/signup'
@@ -16,12 +16,12 @@ class UsersController < ApplicationController
     end
 
     post '/signup' do
-        if params[:username] == "" || params[:password] == "" || params[:email] == "" || params[:confirm_password] == ""
+        if params[:email] == "" || params[:password] == "" ||  params[:confirm_password] == ""
             redirect to '/signup'
         else
-            user = User.create(username: params[:username], password: params[:password], email: params[:email])
+            user = User.create(email: params[:email], password: params[:password])
             session[:user_id] = user.id
-            redirect to '/tweets'
+            redirect to '/amiibos'
         end
     end
 
@@ -29,7 +29,7 @@ class UsersController < ApplicationController
         user = User.find_by(id: session[:user_id])
         if !user.nil?
           if user.id == session[:user_id]
-            redirect to '/tweets'
+            redirect to '/amiibos'
           end
         else
           erb :'/users/login'
@@ -37,11 +37,11 @@ class UsersController < ApplicationController
     end
     
     post '/login' do
-        user = User.find_by(:username => params[:username])
+        user = User.find_by(:email => params[:email])
  
         if user && user.authenticate(params[:password])
           session[:user_id] = user.id
-          redirect "/tweets"
+          redirect "/amiibos"
         else
           redirect "/login"
         end
@@ -63,9 +63,8 @@ class UsersController < ApplicationController
     end
 
     get '/users/:slug' do
-        binding.pry
         @user = User.find_by_slug(params[:slug])
-        @tweets = Tweet.all
+        @amiibos = Tweet.all
         erb :'/users/show'
     end
 
